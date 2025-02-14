@@ -7,7 +7,7 @@
 
 * Install `python 3.10` and `pipenv` (`pip install pipenv`) 
 * Install requirements
-* Create a file `.env` in `/src` like in **example below**
+* Create a file `.env` in `/src` like in **.env.example**
 * Produce migrations
 * Create SuperUser
 * To start Telegram bot: `python manage.py run_bot`
