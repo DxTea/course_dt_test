@@ -1,27 +1,26 @@
-import datetime
 from datetime import datetime
-from django.db import models
+from django.utils import timezone
 
+from django.db import models
 from app.internal.models.user import User
 
 
-def register_user(telegram_id: int, telegram_login: str, message_date: int) -> bool:
-    check_registration_result = find_user(telegram_id)
-
-    if check_registration_result is None:
-        User.objects.create(
-            telegram_id=telegram_id, username=telegram_login, register_date=datetime.fromtimestamp(message_date)
-        )
-        return True
-
-    return False
+def register_user_and_return_status(telegram_id: int, telegram_login: str,
+                                    message_date: int) -> bool:
+    user, created = User.objects.update_or_create(
+        telegram_id=telegram_id,
+        defaults={
+            'username': telegram_login,
+            'register_date': timezone.make_aware(
+                datetime.fromtimestamp(message_date))
+        }
+    )
+    return created
 
 
 def find_user(telegram_id: int):
-    find_user_query_result = User.objects.filter(telegram_id=telegram_id)
-    if len(find_user_query_result) == 0:
-        return None
-    return find_user_query_result[0]
+    user = User.objects.filter(telegram_id=telegram_id).first()
+    return user
 
 
 def check_registration(telegram_id: int):

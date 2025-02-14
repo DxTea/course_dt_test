@@ -1,13 +1,21 @@
 import telebot
 from phonenumber_field.validators import to_python
 
-from app.internal.services.bot_answers import for_users as users_answers
-from app.internal.services.user_service import register_user, save_phone_number, find_user
+from app.internal.transport.bot_answers import for_users as users_answers
+from app.internal.services.user_service import register_user_and_return_status, \
+    save_phone_number, find_user
+
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 def start_message(message: telebot.types.Message, bot: telebot.TeleBot):
-    print((message.from_user.id, message.from_user.full_name, message.date))
-    new_user = register_user(message.from_user.id, message.from_user.full_name, message.date)
+    logger.info(
+        (message.from_user.id, message.from_user.full_name, message.date))
+    new_user = register_user_and_return_status(message.from_user.id,
+                                               message.from_user.full_name,
+                                               message.date)
     text = users_answers.start_command(message.from_user.full_name, new_user)
     bot.send_message(message.from_user.id, text)
 
@@ -17,7 +25,8 @@ def me_command(message: telebot.types.Message, bot: telebot.TeleBot):
     if user is None:
         text = users_answers.warning_not_registered_user()
     else:
-        text = users_answers.me_command(user.username, user.telegram_id, user.phone, user.register_date)
+        text = users_answers.me_command(user.username, user.telegram_id,
+                                        user.phone, user.register_date)
     bot.send_message(message.from_user.id, text, parse_mode="markdown")
 
 
@@ -36,5 +45,7 @@ def set_phone_command(message: telebot.types.Message, bot: telebot.TeleBot):
     bot.send_message(message.from_user.id, text)
 
 
-def warning_unknown_message(message: telebot.types.Message, bot: telebot.TeleBot):
-    bot.send_message(message.from_user.id, users_answers.warning_unknown_message())
+def warning_unknown_message(message: telebot.types.Message,
+                            bot: telebot.TeleBot):
+    bot.send_message(message.from_user.id,
+                     users_answers.warning_unknown_message())

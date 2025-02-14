@@ -4,7 +4,7 @@ from django.db import models
 
 class User(models.Model):
     telegram_id = models.IntegerField(primary_key=True)
-    username = models.CharField(max_length=120)
+    username = models.CharField(max_length=150, unique=True, null=True)
     phone = phonenumber_field.modelfields.PhoneNumberField(blank=True)
     register_date = models.DateTimeField()
 
@@ -12,5 +12,5 @@ class User(models.Model):
         return str(self.username)
 
     class Meta:
-        verbose_name = "User"
-        verbose_name_plural = "Users"
+        verbose_name = "Bot User"
+        verbose_name_plural = "Bot Users"

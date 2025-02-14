@@ -8,14 +8,16 @@ def start_command(username: str, new_user: bool):
     return f"Привет, {username}!"
 
 
-def me_command(username: str, telegram_id: int, phone: str, register_time: datetime.datetime):
+def me_command(username: str, telegram_id: int, phone: str,
+               register_time: datetime.datetime):
     time = register_time.strftime("%m/%d/%Y, %H:%M:%S")
     return f"Ваше имя: `{username}`\nВаш Telegram id: `{telegram_id}`\nВаш номер телефона: `{phone}`\nДата регистрации: `{time}` (GMT+5)"
 
 
 def markup_me(telegram_id):
     markup = types.InlineKeyboardMarkup()
-    button = types.InlineKeyboardButton("API Me", url=f'https://localhost/api/me/{telegram_id}')
+    button = types.InlineKeyboardButton("API Me",
+                                        url=f'https://localhost/api/me/{telegram_id}')
     markup.add(button)
 
 
